@@ -24,20 +24,20 @@ module ApplicationHelper
 
   def status_badge_class(status)
     case status.to_sym
-    when :draft then "bg-gray-100 text-gray-800"
-    when :published then "bg-green-100 text-green-800"
-    when :cancelled then "bg-red-100 text-red-800"
-    when :completed then "bg-blue-100 text-blue-800"
-    else "bg-gray-100 text-gray-800"
+    when :draft then "bg-warm-100 text-warm-700 border border-warm-200"
+    when :published then "bg-emerald-50 text-emerald-700 border border-emerald-200"
+    when :cancelled then "bg-rose-50 text-rose-700 border border-rose-200"
+    when :completed then "bg-sky-50 text-sky-700 border border-sky-200"
+    else "bg-warm-100 text-warm-700 border border-warm-200"
     end
   end
 
   def role_badge_class(role)
     case role.to_sym
-    when :admin then "bg-purple-100 text-purple-800"
-    when :organizer then "bg-blue-100 text-blue-800"
-    when :attendee then "bg-green-100 text-green-800"
-    else "bg-gray-100 text-gray-800"
+    when :admin then "bg-violet-50 text-violet-700 border border-violet-200"
+    when :organizer then "bg-sky-50 text-sky-700 border border-sky-200"
+    when :attendee then "bg-emerald-50 text-emerald-700 border border-emerald-200"
+    else "bg-warm-100 text-warm-700 border border-warm-200"
     end
   end
 end

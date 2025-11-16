@@ -1,49 +1,51 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-warm-50 to-primary-50 py-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full space-y-8">
     <div>
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-warm-900">
         Sign in to your account
       </h2>
-      <p class="mt-2 text-center text-sm text-gray-600">
-        Welcome back to EventHub
+      <p class="mt-2 text-center text-sm text-warm-600">
+        Welcome back to <span class="text-primary-600 font-medium">EventHub</span>
       </p>
     </div>
 
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mt-8 space-y-6" }) do |f| %>
-      <div class="rounded-md shadow-sm space-y-4">
-        <div>
-          <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
-          <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true, class: "mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", placeholder: "Email address" %>
-        </div>
-
-        <div>
-          <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
-          <%= f.password_field :password, autocomplete: "current-password", required: true, class: "mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", placeholder: "Password" %>
-        </div>
-
-        <% if devise_mapping.rememberable? %>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <%= f.check_box :remember_me, class: "h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" %>
-              <%= f.label :remember_me, class: "ml-2 block text-sm text-gray-900" %>
-            </div>
-
-            <div class="text-sm">
-              <%= link_to "Forgot your password?", new_password_path(resource_name), class: "font-medium text-indigo-600 hover:text-indigo-500" %>
-            </div>
+    <div class="bg-white p-8 rounded-xl shadow-soft">
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-6" }) do |f| %>
+        <div class="space-y-4">
+          <div>
+            <%= f.label :email, class: "block text-sm font-medium text-warm-700" %>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true, class: "mt-1 appearance-none relative block w-full px-3 py-2.5 border border-warm-300 placeholder-warm-400 text-warm-900 rounded-lg focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-colors", placeholder: "Email address" %>
           </div>
-        <% end %>
-      </div>
 
-      <div>
-        <%= f.submit "Sign in", class: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer" %>
-      </div>
-    <% end %>
+          <div>
+            <%= f.label :password, class: "block text-sm font-medium text-warm-700" %>
+            <%= f.password_field :password, autocomplete: "current-password", required: true, class: "mt-1 appearance-none relative block w-full px-3 py-2.5 border border-warm-300 placeholder-warm-400 text-warm-900 rounded-lg focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-colors", placeholder: "Password" %>
+          </div>
+
+          <% if devise_mapping.rememberable? %>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <%= f.check_box :remember_me, class: "h-4 w-4 text-primary-600 focus:ring-primary-500 border-warm-300 rounded" %>
+                <%= f.label :remember_me, class: "ml-2 block text-sm text-warm-700" %>
+              </div>
+
+              <div class="text-sm">
+                <%= link_to "Forgot your password?", new_password_path(resource_name), class: "font-medium text-primary-600 hover:text-primary-500 transition-colors" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.submit "Sign in", class: "group relative w-full flex justify-center py-2.5 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 cursor-pointer shadow-sm hover:shadow-md transition-all" %>
+        </div>
+      <% end %>
+    </div>
 
     <div class="text-center">
-      <p class="text-sm text-gray-600">
+      <p class="text-sm text-warm-600">
         Don't have an account?
-        <%= link_to "Sign up", new_registration_path(resource_name), class: "font-medium text-indigo-600 hover:text-indigo-500" %>
+        <%= link_to "Sign up", new_registration_path(resource_name), class: "font-medium text-primary-600 hover:text-primary-500 transition-colors" %>
       </p>
     </div>
   </div>
