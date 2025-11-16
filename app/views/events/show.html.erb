@@ -1,0 +1,143 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <!-- Cover Image -->
+    <div class="relative h-64 sm:h-96">
+      <% if @event.cover_image.attached? %>
+        <%= image_tag @event.cover_image, class: "w-full h-full object-cover" %>
+      <% else %>
+        <div class="w-full h-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
+          <svg class="h-24 w-24 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+      <% end %>
+      <div class="absolute top-4 right-4">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <%= status_badge_class(@event.status) %>">
+          <%= @event.status.humanize %>
+        </span>
+      </div>
+    </div>
+
+    <div class="px-4 py-5 sm:px-6">
+      <div class="flex justify-between items-start">
+        <div>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 mb-2">
+            <%= @event.category.name %>
+          </span>
+          <h1 class="text-3xl font-bold text-gray-900"><%= @event.title %></h1>
+          <p class="mt-1 text-sm text-gray-500">
+            Organized by <%= @event.organizer.full_name %>
+          </p>
+        </div>
+        <% if policy(@event).update? %>
+          <div class="flex space-x-2">
+            <% if @event.draft? %>
+              <%= button_to "Publish", publish_event_path(@event), method: :patch, class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700" %>
+            <% elsif @event.published? %>
+              <%= button_to "Cancel Event", cancel_event_path(@event), method: :patch, data: { confirm: "Are you sure you want to cancel this event?" }, class: "inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700" %>
+            <% end %>
+            <%= link_to "Edit", edit_event_path(@event), class: "inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-200">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+          <div>
+            <h2 class="text-lg font-medium text-gray-900 mb-3">About this event</h2>
+            <div class="prose max-w-none text-gray-600">
+              <%= simple_format(@event.description) %>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-lg font-medium text-gray-900 mb-3">Location</h2>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <p class="font-medium text-gray-900"><%= @event.location %></p>
+              <p class="text-sm text-gray-500 mt-1"><%= @event.address %></p>
+              <% if @event.latitude.present? && @event.longitude.present? %>
+                <div id="map" class="mt-4 h-64 bg-gray-200 rounded-lg"
+                     data-controller="map"
+                     data-map-latitude-value="<%= @event.latitude %>"
+                     data-map-longitude-value="<%= @event.longitude %>"
+                     data-map-title-value="<%= @event.location %>">
+                  <div class="flex items-center justify-center h-full text-gray-500">
+                    Map will load here
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Attendees List (for organizers) -->
+          <% if policy(@event).update? && @event.registrations.any? %>
+            <div>
+              <h2 class="text-lg font-medium text-gray-900 mb-3">
+                Attendees (<%= @event.registrations.confirmed.count %>)
+              </h2>
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <ul class="divide-y divide-gray-200">
+                  <% @event.registrations.confirmed.includes(:user).each do |registration| %>
+                    <li class="py-3 flex items-center">
+                      <div class="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-medium text-sm">
+                        <%= registration.user.first_name[0].upcase %><%= registration.user.last_name[0].upcase %>
+                      </div>
+                      <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900"><%= registration.user.full_name %></p>
+                        <p class="text-xs text-gray-500"><%= registration.user.email %></p>
+                      </div>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+          <div class="bg-gray-50 rounded-lg p-6 sticky top-6">
+            <div class="space-y-4">
+              <div>
+                <div class="flex items-center text-gray-900">
+                  <svg class="flex-shrink-0 mr-3 h-5 w-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <div>
+                    <p class="font-medium"><%= format_date(@event.starts_at) %></p>
+                    <p class="text-sm text-gray-500"><%= format_time(@event.starts_at) %> - <%= format_time(@event.ends_at) %></p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center text-gray-900">
+                  <svg class="flex-shrink-0 mr-3 h-5 w-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                  <div>
+                    <p class="font-medium" id="event_<%= @event.id %>_rsvp_count">
+                      <%= render "rsvp_count", event: @event %>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="border-gray-200">
+
+              <!-- Registration Button -->
+              <div id="registration_button">
+                <%= render "registration_button", event: @event, registration: @registration %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= turbo_stream_from "event_#{@event.id}_registrations" %>

@@ -1,0 +1,6 @@
+<%= event.registrations.confirmed.count %> / <%= event.capacity %> spots filled
+<% if event.full? %>
+  <span class="ml-1 text-xs text-red-600 font-medium">(Full)</span>
+<% elsif event.available_spots <= 5 %>
+  <span class="ml-1 text-xs text-orange-600 font-medium">(<%= event.available_spots %> left)</span>
+<% end %>

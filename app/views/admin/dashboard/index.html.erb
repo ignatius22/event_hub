@@ -1,0 +1,154 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <h1 class="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
+
+  <!-- Stats Overview -->
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Users</dt>
+              <dd class="text-3xl font-semibold text-gray-900"><%= @total_users %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Events</dt>
+              <dd class="text-3xl font-semibold text-gray-900"><%= @total_events %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Published Events</dt>
+              <dd class="text-3xl font-semibold text-gray-900"><%= @published_events %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total RSVPs</dt>
+              <dd class="text-3xl font-semibold text-gray-900"><%= @total_registrations %></dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div class="bg-white shadow rounded-lg p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Events by Category</h3>
+      <%= pie_chart @events_by_category, donut: true, colors: ["#4F46E5", "#7C3AED", "#EC4899", "#F59E0B", "#10B981", "#3B82F6", "#EF4444", "#6366F1", "#8B5CF6", "#F97316"] %>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Registrations (Last 30 Days)</h3>
+      <%= line_chart @registrations_by_day, colors: ["#4F46E5"] %>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Events by Status</h3>
+      <%= bar_chart @events_by_status, colors: ["#10B981", "#4F46E5", "#EF4444", "#3B82F6"] %>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-4">Users by Role</h3>
+      <%= pie_chart @users_by_role, colors: ["#10B981", "#3B82F6", "#7C3AED"] %>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900">Recent Events</h3>
+      </div>
+      <ul class="divide-y divide-gray-200">
+        <% @recent_events.each do |event| %>
+          <li class="px-4 py-4">
+            <div class="flex items-center justify-between">
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-indigo-600 truncate">
+                  <%= link_to event.title, event %>
+                </p>
+                <p class="text-sm text-gray-500">
+                  by <%= event.user.full_name %> • <%= event.category.name %>
+                </p>
+              </div>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= status_badge_class(event.status) %>">
+                <%= event.status.humanize %>
+              </span>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900">Recent Registrations</h3>
+      </div>
+      <ul class="divide-y divide-gray-200">
+        <% @recent_registrations.each do |registration| %>
+          <li class="px-4 py-4">
+            <div class="flex items-center">
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900">
+                  <%= registration.user.full_name %>
+                </p>
+                <p class="text-sm text-gray-500">
+                  registered for <%= link_to registration.event.title, registration.event, class: "text-indigo-600 hover:text-indigo-800" %>
+                </p>
+              </div>
+              <p class="text-xs text-gray-500">
+                <%= time_ago_in_words(registration.created_at) %> ago
+              </p>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

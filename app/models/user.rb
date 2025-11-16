@@ -1,0 +1,43 @@
+class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+
+  # Associations
+  has_many :events, dependent: :destroy
+  has_many :registrations, dependent: :destroy
+  has_many :registered_events, through: :registrations, source: :event
+  has_one_attached :avatar
+
+  # Enums
+  enum :role, { attendee: 0, organizer: 1, admin: 2 }
+
+  # Validations
+  validates :first_name, presence: true, length: { maximum: 50 }
+  validates :last_name, presence: true, length: { maximum: 50 }
+  validates :bio, length: { maximum: 500 }
+  validates :role, presence: true
+
+  # Callbacks
+  before_create :generate_api_token
+
+  # Instance methods
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
+  def can_create_events?
+    organizer? || admin?
+  end
+
+  def registered_for?(event)
+    registrations.exists?(event: event)
+  end
+
+  private
+
+  def generate_api_token
+    self.api_token = SecureRandom.hex(32)
+  end
+end
