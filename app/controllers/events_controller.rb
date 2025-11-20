@@ -1,22 +1,33 @@
 class EventsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :cancel]
+  before_action :authenticate_user!, except: [:index, :show, :calendar]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :cancel, :calendar]
   after_action :verify_authorized, except: [:index, :my_events]
 
   def index
-    @events = Event.published.upcoming.ordered_by_date.includes(:category, :user, :registrations)
+    @events = Event.published.upcoming.ordered_by_date.includes(:category, :user, :registrations, :tags)
 
     # Apply filters
     @events = @events.by_category(params[:category]) if params[:category].present?
-    @events = @events.search(params[:search]) if params[:search].present?
+    @events = @events.by_tag(params[:tag]) if params[:tag].present?
+
+    # Use full-text search if available, otherwise fall back to basic search
+    if params[:search].present?
+      @events = @events.full_text_search(params[:search])
+    end
 
     @pagy, @events = pagy(@events)
     @categories = Category.ordered
+    @popular_tags = Tag.popular.limit(20)
   end
 
   def show
     authorize @event
     @registration = current_user&.registrations&.find_by(event: @event)
+    @comments = @event.comments.includes(:user).recent
+    @reviews = @event.reviews.includes(:user).recent
+    @comment = Comment.new
+    @review = Review.new
+    @bookmark = current_user&.bookmarks&.find_by(event: @event)
   end
 
   def new
@@ -84,6 +95,15 @@ class EventsController < ApplicationController
     @pagy, @events = pagy(@events)
   end
 
+  def calendar
+    authorize @event
+
+    send_data @event.to_ics,
+      filename: "#{@event.title.parameterize}.ics",
+      type: 'text/calendar',
+      disposition: 'attachment'
+  end
+
   private
 
   def set_event
@@ -94,7 +114,8 @@ class EventsController < ApplicationController
     params.require(:event).permit(
       :title, :description, :location, :address,
       :starts_at, :ends_at, :capacity, :category_id,
-      :cover_image, :status
+      :cover_image, :status, :tag_list, :recurring,
+      :recurrence_rule, :recurrence_end_date
     )
   end
 end

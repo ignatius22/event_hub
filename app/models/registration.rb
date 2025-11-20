@@ -13,9 +13,16 @@ class Registration < ApplicationRecord
   # Callbacks
   after_create_commit :broadcast_rsvp_update
   after_destroy_commit :broadcast_rsvp_update
+  before_create :generate_qr_code_token
 
   # Scopes
   scope :for_event, ->(event) { where(event: event) }
+  scope :checked_in, -> { where(checked_in: true) }
+
+  # Instance methods
+  def check_in!
+    update(checked_in: true, checked_in_at: Time.current)
+  end
 
   private
 
@@ -42,5 +49,9 @@ class Registration < ApplicationRecord
       partial: "events/rsvp_count",
       locals: { event: event }
     )
+  end
+
+  def generate_qr_code_token
+    self.qr_code_token = SecureRandom.urlsafe_base64(32)
   end
 end

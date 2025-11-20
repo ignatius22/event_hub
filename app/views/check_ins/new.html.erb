@@ -1,0 +1,40 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Check-in for <%= @event.title %></h1>
+
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-semibold mb-4">Scan QR Code</h2>
+    <div id="qr-reader" class="mb-6" style="width: 100%; max-width: 500px;"></div>
+
+    <div id="check-in-result" class="hidden p-4 rounded-lg mb-4"></div>
+
+    <h3 class="text-lg font-semibold mb-3">Registered Attendees</h3>
+    <div class="space-y-2">
+      <% @registrations.each do |registration| %>
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+          <div>
+            <p class="font-medium"><%= registration.user.full_name %></p>
+            <p class="text-sm text-gray-600"><%= registration.user.email %></p>
+          </div>
+          <% if registration.checked_in? %>
+            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+              Checked In
+            </span>
+          <% else %>
+            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">
+              Pending
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+// Simple QR scanner implementation
+// In production, use a library like html5-qrcode
+document.addEventListener('DOMContentLoaded', function() {
+  // Placeholder for QR scanner integration
+  console.log('QR scanner would be initialized here');
+});
+</script>

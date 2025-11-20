@@ -10,6 +10,12 @@ class User < ApplicationRecord
   has_many :registered_events, through: :registrations, source: :event
   has_one_attached :avatar
 
+  # New feature associations
+  has_many :comments, dependent: :destroy
+  has_many :bookmarks, dependent: :destroy
+  has_many :bookmarked_events, through: :bookmarks, source: :event
+  has_many :reviews, dependent: :destroy
+
   # Enums
   enum :role, { attendee: 0, organizer: 1, admin: 2 }
 
@@ -33,6 +39,14 @@ class User < ApplicationRecord
 
   def registered_for?(event)
     registrations.exists?(event: event)
+  end
+
+  def bookmarked?(event)
+    bookmarks.exists?(event: event)
+  end
+
+  def reviewed?(event)
+    reviews.exists?(event: event)
   end
 
   private

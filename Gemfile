@@ -69,6 +69,9 @@ gem "geocoder", "~> 1.8"
 # JSON serialization for API
 gem "jsonapi-serializer", "~> 2.2"
 
+# QR Code generation
+gem "rqrcode", "~> 2.0"
+
 # Environment variables
 gem "dotenv-rails", groups: [:development, :test]
 

@@ -1,0 +1,19 @@
+<div class="bg-white rounded-lg shadow p-4 mb-3">
+  <div class="flex items-start justify-between">
+    <div class="flex-1">
+      <div class="flex items-center mb-2">
+        <span class="font-semibold text-gray-900"><%= comment.user.full_name %></span>
+        <span class="text-gray-500 text-sm ml-2"><%= time_ago_in_words(comment.created_at) %> ago</span>
+      </div>
+      <p class="text-gray-700"><%= comment.body %></p>
+    </div>
+    <% if user_signed_in? && (comment.user == current_user || current_user.admin?) %>
+      <%= button_to event_comment_path(comment.event, comment),
+          method: :delete,
+          data: { confirm: "Are you sure?" },
+          class: "text-red-600 hover:text-red-800 text-sm" do %>
+        Delete
+      <% end %>
+    <% end %>
+  </div>
+</div>
